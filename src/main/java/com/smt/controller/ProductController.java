@@ -3,10 +3,12 @@ package com.smt.controller;
 import com.smt.exception.ProductNotFoundException;
 import com.smt.model.Product;
 import com.smt.repository.ProductRepository;
+import com.smt.util.AuthUtil;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.info.Info;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,19 +32,22 @@ public class ProductController {
         this.productRepository = productRepository;
     }
 
-    @Operation(description = "Get all products")
     @GetMapping
+    @PreAuthorize(AuthUtil.ANY_ROLE)
+    @Operation(description = "Get all products")
     List<Product> getAllProducts() {
         return productRepository.findAll();
     }
 
-    @Operation(description = "Create a new product")
     @PostMapping
+    @PreAuthorize(AuthUtil.ADMIN_ROLE_ONLY)
+    @Operation(description = "Create a new product")
     Product createNewProduct(@RequestBody Product newProduct) {
         return productRepository.save(newProduct);
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize(AuthUtil.ANY_ROLE)
     @Operation(description = "Get the product by id")
     ResponseEntity getOneProduct(@PathVariable Long id) {
         Product product = productRepository.findById(id)
@@ -51,8 +56,9 @@ public class ProductController {
         return ResponseEntity.ok(product);
     }
 
-    @Operation(description = "Update the product by id and new product's details")
     @PutMapping("/{id}")
+    @PreAuthorize(AuthUtil.ADMIN_ROLE_ONLY)
+    @Operation(description = "Update the product by id and new product's details")
     Product updateProduct(@RequestBody Product newProduct, @PathVariable Long id) {
 
         return productRepository.findById(id)
@@ -70,8 +76,9 @@ public class ProductController {
                 });
     }
 
-    @Operation(description = "Delete the product by id")
     @DeleteMapping("/{id}")
+    @PreAuthorize(AuthUtil.ADMIN_ROLE_ONLY)
+    @Operation(description = "Delete the product by id")
     void deleteProduct(@PathVariable Long id) {
         productRepository.deleteById(id);
     }

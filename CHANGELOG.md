@@ -10,3 +10,4 @@ All notable changes to this project will be documented in this file.
 ### Added
 - openAPI dependency
 - product CRUD apis
+- adding user/admin roles for security

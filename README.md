@@ -55,6 +55,8 @@ Clone or download a copy of this project.
 ### 2.1 Prerequisites
 
 This project requires Java 11, Maven and at least one database (PostgreS, H2, MySql).
+Please, see `SecurityConfig` class for more information.
+WARN: If no security config then change the value from `spring.security.user.password` property. User `user` value as default username.
 
 ### 2.2 Database installation
 
