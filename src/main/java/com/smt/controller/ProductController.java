@@ -1,12 +1,12 @@
 package com.smt.controller;
 
-import com.smt.exception.ProductNotFoundException;
 import com.smt.model.Product;
-import com.smt.repository.ProductRepository;
+import com.smt.service.ProductService;
 import com.smt.util.AuthUtil;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.info.Info;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,69 +18,63 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.Instant;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/products")
 @OpenAPIDefinition(info = @Info(title = "Product API", version = "1.0.0", description = "CRUD product's functions"))
 public class ProductController {
 
-    private final ProductRepository productRepository;
+    private final ProductService productService;
 
-    public ProductController(ProductRepository productRepository) {
-        this.productRepository = productRepository;
+    public ProductController(ProductService productService) {
+        this.productService = productService;
     }
 
     @GetMapping
     @PreAuthorize(AuthUtil.ANY_ROLE)
     @Operation(description = "Get all products")
     List<Product> getAllProducts() {
-        return productRepository.findAll();
+        log.info("Receive request to receive all products");
+
+        return productService.getAllProducts();
     }
 
     @PostMapping
     @PreAuthorize(AuthUtil.ADMIN_ROLE_ONLY)
     @Operation(description = "Create a new product")
     Product createNewProduct(@RequestBody Product newProduct) {
-        return productRepository.save(newProduct);
+        log.info("Receive request to receive to save a new product");
+
+        return productService.createNewProduct(newProduct);
     }
 
     @GetMapping("/{id}")
     @PreAuthorize(AuthUtil.ANY_ROLE)
     @Operation(description = "Get the product by id")
     ResponseEntity getOneProduct(@PathVariable Long id) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException(id));
+        log.info("Receive request to find the product with id: {}", id);
 
-        return ResponseEntity.ok(product);
+        return ResponseEntity.ok(productService.getOneProduct(id));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize(AuthUtil.ADMIN_ROLE_ONLY)
     @Operation(description = "Update the product by id and new product's details")
     Product updateProduct(@RequestBody Product newProduct, @PathVariable Long id) {
+        log.info("Receive request to update the product with id: {}", id);
 
-        return productRepository.findById(id)
-                .map(product -> {
-                    product.setName(newProduct.getName());
-                    product.setDescription(newProduct.getDescription());
-                    product.setPrice(newProduct.getPrice());
-                    product.setUpdateDate(Instant.now());
-                    return productRepository.save(product);
-                })
-                .orElseGet(() -> {
-                    newProduct.setId(id);
-                    newProduct.setCreateDate(Instant.now());
-                    return productRepository.save(newProduct);
-                });
+        return productService.updateProduct(newProduct, id);
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize(AuthUtil.ADMIN_ROLE_ONLY)
     @Operation(description = "Delete the product by id")
     void deleteProduct(@PathVariable Long id) {
-        productRepository.deleteById(id);
+        log.info("Receive request to delete the product with id: {}", id);
+
+        productService.deleteProduct(id);
     }
 
 }

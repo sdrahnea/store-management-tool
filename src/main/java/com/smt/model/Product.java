@@ -29,6 +29,8 @@ public class Product {
 
     private BigDecimal price;
 
+    private ProductType productType;
+
     private Instant createDate;
 
     private Instant updateDate;
