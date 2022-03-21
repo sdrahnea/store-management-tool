@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.smt</groupId>
 	<artifactId>store-management-tool</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>store-management-tool</name>
 	<description>store management tool</description>
 	<properties>
@@ -71,7 +71,13 @@
 			<version>1.6.6</version>
 		</dependency>
 
-	</dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
 
 	<build>
 		<plugins>

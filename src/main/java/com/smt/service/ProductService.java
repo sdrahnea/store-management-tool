@@ -1,13 +1,12 @@
 package com.smt.service;
 
-import com.smt.exception.ProductNameAlreadyExistsException;
-import com.smt.exception.ProductNameDoesNotProvidedException;
-import com.smt.exception.ProductNotFoundException;
+import com.smt.exception.*;
 import com.smt.model.Product;
 import com.smt.repository.ProductRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 
@@ -28,7 +27,7 @@ public class ProductService {
             throw new ProductNameDoesNotProvidedException();
         }
 
-        if(productRepository.findByName(name)) {
+        if(productRepository.findByName(name) != null) {
             log.warn("The product name already exists. Name: {}", name);
             throw new ProductNameAlreadyExistsException(name);
         }
@@ -43,7 +42,6 @@ public class ProductService {
     public Product getOneProduct(Long id){
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException(id));
-
         return product;
     }
 
@@ -57,7 +55,6 @@ public class ProductService {
                     return productRepository.save(product);
                 })
                 .orElseGet(() -> {
-                    newProduct.setId(id);
                     newProduct.setCreateDate(Instant.now());
                     return productRepository.save(newProduct);
                 });
@@ -65,6 +62,23 @@ public class ProductService {
 
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);
+    }
+
+    public Product changePrice(Long id, BigDecimal price) {
+        if(price == null) {
+            throw new MissingMandatoryFieldException("The field price is mandatory!");
+        }
+
+        if(price.compareTo(BigDecimal.ZERO) == 0){
+            throw new PriceIsNotGreaterThanZeroException(id);
+        }
+
+        return productRepository.findById(id).map(product -> {
+            product.setPrice(price);
+            return productRepository.save(product);
+        }).orElseGet(() -> {
+            throw new ProductNotFoundException(id);
+        });
     }
 
 }

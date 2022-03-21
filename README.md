@@ -22,7 +22,7 @@ Small demo of an API that acts as a store management tool
 6. Built With
 7. Contributing
 8. Versioning
-10. License
+9. License
 
 ## 1. Functionalities
 
@@ -97,12 +97,41 @@ mvn clean package
 ```
 
 ## 3. Running the tests
-
+Find all project test into `src/test/java` path. Per overall description:
+- `com.smt.controller` contains all integration tests
+- `com.smt.service` contains all unit tests
+- `com.smt.utils` util class for testing propose
 ## 4. Deployment
+If the build (the jar file) is ready then the application can be run. Please, use the following command to run the application:
+```
+XXX:store-management-tool xxx java -jar target/store-management-tool-X.Y.Z-SNAPSHOT.jar
+```
 
 ### 4.1 Deployment & run on LINUX environment
+In case if application is run in a linux based instance, please create the following folders:
+1. /app         - folder where the JAR is located;
+2. /app/log     - folder which will contains the logs;
+3. /app/config  - folder which will contains the application configuration files;
+4. /app/file-db - production or working folder where service will save physically the content;
+5. /app/test-db - test folder where service will save physically the content;
+
+To run the application we have the following options:
+```
+nohub java -jar store-management-tool-1.0.0.jar --spring.config.location=/app/config/application.properties &
+```
+
+To show last NUM_OF_RECORDS from a FILE_NAME linux command:
+```
+tail -n NUM_OF_RECORDS FILE_NAME
+```
 
 ### 4.2 Deployment & run on WINDOWS environment
+The application was developed on Windows environment.
+
+To run application, please run this command:
+```
+java -jar /projects/app/store-management-tool-1.0.0.jar --spring.config.location=/projects/app/config/application.properties
+```
 
 ## 5. Swagger usage
 This will automatically deploy swagger-ui to a spring-boot application:
@@ -124,6 +153,7 @@ To access the Swagger UI, please use the following links:
 * [Spring Data](https://spring.io/projects/spring-data) - Spring Data’s mission is to provide a familiar and consistent, Spring-based programming model for data access while still retaining the special traits of the underlying data store.
 * [Spring Data JPA](https://spring.io/projects/spring-data-jpa) - Spring Data JPA, part of the larger Spring Data family, makes it easy to easily implement JPA based repositories. This module deals with enhanced support for JPA based data access layers. It makes it easier to build Spring-powered applications that use data access technologies.
 * [Spring Doc](https://springdoc.org/) - Java library helps to automate the generation of API documentation using spring boot projects..
+* [H2](https://www.h2database.com/) - H2 is a relational database management system written in Java. It can be embedded in Java applications or run in client-server mode.
 * [PostgreSQL](https://www.postgresql.org/) - PostgreSQL, also known as Postgres, is a free and open-source relational database management system (RDBMS) emphasizing extensibility and technical standards compliance. It is designed to handle a range of workloads, from single machines to data warehouses or Web services with many concurrent users. It is the default database for macOS Server, and is also available for Linux, FreeBSD, OpenBSD, and Windows.
 * [Maven](https://maven.apache.org/) - Apache Maven is a software project management and comprehension tool. Based on the concept of a project object model (POM), Maven can manage a project's build, reporting and documentation from a central piece of information.
 

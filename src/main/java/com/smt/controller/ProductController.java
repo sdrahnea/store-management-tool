@@ -1,6 +1,8 @@
 package com.smt.controller;
 
+import com.smt.exception.GlobalExceptionHandler;
 import com.smt.model.Product;
+import com.smt.model.ProductPriceChangeDTO;
 import com.smt.service.ProductService;
 import com.smt.util.AuthUtil;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
@@ -24,7 +26,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/products")
 @OpenAPIDefinition(info = @Info(title = "Product API", version = "1.0.0", description = "CRUD product's functions"))
-public class ProductController {
+public class ProductController  extends GlobalExceptionHandler {
 
     private final ProductService productService;
 
@@ -75,6 +77,15 @@ public class ProductController {
         log.info("Receive request to delete the product with id: {}", id);
 
         productService.deleteProduct(id);
+    }
+
+    @PostMapping("/priceChange")
+    @PreAuthorize(AuthUtil.ADMIN_ROLE_ONLY)
+    @Operation(description = "Update product's price")
+    Product changePrice(@RequestBody ProductPriceChangeDTO productPriceChangeDTO) {
+        log.info("Receive request for price change. Product id: {}, new price: {}", productPriceChangeDTO.getId(), productPriceChangeDTO.getPrice());
+
+        return productService.changePrice(productPriceChangeDTO.getId(), productPriceChangeDTO.getPrice());
     }
 
 }
